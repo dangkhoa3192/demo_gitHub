@@ -1,0 +1,54 @@
+#include <stdio.h>
+#include <stdlib.h> 
+#define MAX_ELEMENTS 100
+
+int visit[MAX_ELEMENTS], parent[MAX_ELEMENTS];
+
+typedef struct {
+	int dataG[MAX_ELEMENTS][MAX_ELEMENTS];
+	int n;
+} Graph;
+
+void DFS(Graph* G, int x) {
+	int y;
+	visit[x] = 1;
+	for(y = 1; y <= G->n; y++) 
+		if((visit[y] == 0) && (G->dataG[x][y] == 1)) {
+			parent[y] = 1;
+			DFS(G, y);
+		}
+}
+
+int main() {
+	int n, m, u, v, i, j;
+	scanf("%d%d", &n, &m);
+	Graph* G = (Graph*) malloc(n*sizeof(Graph));
+	for(i = 1; i <= n; i++)
+		for(j = 1; j <= n; j++)
+			G->dataG[i][j] = 0;
+	G->n = n;
+	for(i = 1; i <= m; i++) {
+		scanf("%d%d", &u, &v);
+		G->dataG[u][v] = 1;
+		G->dataG[v][u] = 1;
+	}
+	for(i = 1; i <= G->n; i++) {
+		visit[i] = 0;
+		parent[i] = MAX_ELEMENTS;
+	}
+	for(i =1; i <= G->n; i++) 
+		if(visit[i] == 0) {
+			parent[i] = 0;
+			DFS(G, i);
+		}
+	int count = 0;
+	for(i = 1; i <= G->n; i++) 
+		if(parent[i] == 0)
+			count++;
+	if(count > 1)
+		printf("KHONG");
+	else
+		printf("DUOC");
+		
+	return 0;		
+}
